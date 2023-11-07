@@ -1,6 +1,3 @@
-# Description: This script is to sync the users with the 'schueler' group to the 'relution-students' group
-
-# get settings from config file
 import json
 import requests
 
@@ -95,7 +92,7 @@ def getAzureUsersByGroup(azureGroupId):
     return usersInGroup
 
 
-# Check User is in Relution Group
+# Check User is in Relution Group or not, if not add user to array
 def getGroupUsers(relutionGroupId):
     organisationUUID = config['organisationUUID']
     headers = {'X-User-Access-Token': accessToken}
