@@ -1,3 +1,6 @@
+# Description: This script is to sync the users with the 'schueler' group to the 'relution-students' group
+
+# get settings from config file
 import json
 import requests
 
