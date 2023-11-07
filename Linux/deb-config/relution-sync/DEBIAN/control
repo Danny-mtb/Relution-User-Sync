@@ -1,0 +1,10 @@
+Package: relution-sync
+Version: 1.0.0
+Section: misc
+Priority: extra
+Architecture: all
+Depends: python3, python3-ldap3, python3-requests, python3-requests-kerberos, python3-requests-ntlm, python3-requests-oauthlib, python3-requests-toolbelt, python3-urllib3, python3-yaml
+Installed-Size: 8
+Maintainer: Danny Anders <danny.anders@cyberworld-system.de>
+Homepage: www.cyberworld-system.de
+Description: A tool to syncronize the relution local groups with the ldap groups

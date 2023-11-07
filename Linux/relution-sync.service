@@ -1,0 +1,12 @@
+#/etc/systemd/system/relution-sync.service
+[Unit]
+Description=Relution user upload sync
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/python python /opt/relution-sync/relution-sync.py
