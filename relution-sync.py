@@ -1,9 +1,12 @@
+#!/usr/bin/python
+# Author: Danny Anders
+# Version: 1.1
 import json
 import requests
 import datetime
 
 try:
-    configFile = open('config.json')
+    configFile = open('./config/config.json')
     config = json.load(configFile)
     configFile.close()
 except FileNotFoundError:
@@ -11,13 +14,13 @@ except FileNotFoundError:
 
 accessToken = config['accessToken']
 relutionServer = config['protocol'] + '://' + config['hostname'] + ':' + config['port']
-azureGroupId = config['azureGroupId']
-relutionGroupId = config['relutionGroupId']
-organisationUUID = config['organisationUUID']
 
 logDateAndTime = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+logFile = open('/var/log/relution-sync.log', 'a')
 
-logFile = open('/opt/relution-sync/log/error.log', 'a')
+
+def getOrganisationNumbersFromConfig():
+    return len(config["organisation"])
 
 
 def systemCheck():
@@ -25,31 +28,21 @@ def systemCheck():
         logFile.write(logDateAndTime + ' | No access token found in config.json\n')
     if relutionServer == '':
         logFile.write(logDateAndTime + ' |  No relution server found in config.json\n')
-    if azureGroupId == '':
-        logFile.write(logDateAndTime + ' | No azure group id found in config.json\n')
-    if relutionGroupId == '':
-        logFile.write(logDateAndTime + ' | No relution group id found in config.json\n')
-    if organisationUUID == '':
-        logFile.write(logDateAndTime + ' | No organisation UUID found in config.json\n')
 
 
-def getGroupUUID(groupName):
-    exit()
-
-
-def addUserToGroup(uuid):
+def addUserToGroup(uuid, organisationUUID, groupId_1):
     userCount = 0
 
     headers = {
         'accept': 'application/json',
-        'X-User-Access-Token': config['accessToken'],
+        'X-User-Access-Token': accessToken,
         'Content-Type': 'application/json',
     }
     params = {
-        'tenantOrganizationUuid': config['organisationUUID']
+        'tenantOrganizationUuid': organisationUUID
     }
     json_data = [
-        config['relutionGroupId'],
+        groupId_1,
     ]
 
     if len(uuid) == 0:
@@ -79,10 +72,10 @@ def addUserToGroup(uuid):
             if response.status_code == 200:
                 userCount += 1
 
-    logFile.write(logDateAndTime + ' | Successfully added ' + str(userCount) + ' users to group\n')
+    logFile.write(logDateAndTime + '| ' + groupId_1 + ' | Successfully added ' + str(userCount) + ' users to group\n')
 
 
-def getAzureUsersByGroup(groupId_2):
+def getAzureUsersByGroup(groupId_2, organisationUUID):
     headers = {'X-User-Access-Token': accessToken}
     url = relutionServer + '/api/v1/security/groups/' + groupId_2 + '/members?tenantOrganizationUuid=' + organisationUUID
 
@@ -93,8 +86,6 @@ def getAzureUsersByGroup(groupId_2):
         logFile.write(logDateAndTime + ' | Access token is invalid\n')
     if response.status_code == 404:
         logFile.write(logDateAndTime + ' | Organisation UUID is invalid\n')
-    if response.status_code == 200:
-        logFile.write(logDateAndTime + ' | Successfully got Azure users from relution server\n')
 
     usersInGroup = []
     users = response.json()['items']
@@ -105,8 +96,7 @@ def getAzureUsersByGroup(groupId_2):
     return usersInGroup
 
 
-# Check User is in Relution Group or not, if not add user to array
-def getGroupUsers(groupId_1):
+def getGroupUsers(groupId_1, organisationUUID):
     headers = {'X-User-Access-Token': accessToken}
     url = relutionServer + '/api/v1/security/groups/' + groupId_1 + '/members?tenantOrganizationUuid=' + organisationUUID
 
@@ -116,8 +106,6 @@ def getGroupUsers(groupId_1):
         logFile.write(logDateAndTime + ' | Access token is invalid\n')
     if response.status_code == 404:
         logFile.write(logDateAndTime + ' | Organisation UUID is invalid\n')
-    if response.status_code == 200:
-        logFile.write(logDateAndTime + ' | Successfully got users from relution server\n')
 
     usersInGroup = []
     users = response.json()['items']
@@ -137,10 +125,14 @@ def comparisonGroups(relutionGroup, azureGroup):
     return comparisonGroupsAdd
 
 
-def main():
-    systemCheck()
-    addUserToGroup(comparisonGroups(getGroupUsers(relutionGroupId), getAzureUsersByGroup(azureGroupId)))
+def main(organisationConfigNumbers):
+    for orgIndex in range(organisationConfigNumbers):
+        organisationUUID = config["organisation"][orgIndex]["organisationUUID"]
+        groupId_1 = config["organisation"][orgIndex]["groupId_1"]  # Relution Group - to Group
+        groupId_2 = config["organisation"][orgIndex]["groupId_2"]  # Azure Group - from Group
+        addUserToGroup(comparisonGroups(getGroupUsers(groupId_1, organisationUUID), getAzureUsersByGroup(groupId_2, organisationUUID)), organisationUUID, groupId_1)
 
 
 if __name__ == '__main__':
-    main()
+    systemCheck()
+    main(getOrganisationNumbersFromConfig())

@@ -1,0 +1,15 @@
+{
+  "protocol": "",
+  "hostname": "",
+  "port": "",
+  "accessToken": "",
+
+  "organisation": [
+    {
+      "id": 1,
+      "groupId_1": "",
+      "groupId_2": "",
+      "organisationUUID": ""
+    }
+  ]
+}

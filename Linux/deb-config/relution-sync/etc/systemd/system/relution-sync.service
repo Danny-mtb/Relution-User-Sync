@@ -9,4 +9,4 @@ Type=simple
 Restart=always
 RestartSec=1
 User=root
-ExecStart=/usr/bin/python python /opt/relution-sync/relution-sync.py
+ExecStart=/usr/bin/python python /etc/relution-sync/relution-sync.py
