@@ -128,8 +128,8 @@ def comparisonGroups(relutionGroup, azureGroup):
 def main(organisationConfigNumbers):
     for orgIndex in range(organisationConfigNumbers):
         organisationUUID = config["organisation"][orgIndex]["organisationUUID"]
-        groupId_1 = config["organisation"][orgIndex]["groupId_1"]  # Relution Group - to Group
-        groupId_2 = config["organisation"][orgIndex]["groupId_2"]  # Azure Group - from Group
+        groupId_1 = config["organisation"][orgIndex]["groupId_1"]
+        groupId_2 = config["organisation"][orgIndex]["groupId_2"]
         addUserToGroup(comparisonGroups(getGroupUsers(groupId_1, organisationUUID), getAzureUsersByGroup(groupId_2, organisationUUID)), organisationUUID, groupId_1)
 
 
