@@ -1,12 +1,19 @@
 # Relution-User-Sync
-enable service 
 
-## Installation
-Change the `/etc/relution-sync/config/sample-config.json` file to your needs and setup.
+## Installation && Configuration
+Copy the `relution-sync.deb` file from `Linux/deb-config` to your server and run the following command:
+
+`apt install ./relution-sync.deb` - This installs the package and all dependencies.
+After the installation you can find the config file under `/etc/relution-sync/config/sample-config.json`.
+
+Change the `sample-config.json` file to your needs and setup.
 
 Then run the following commands:
 
 `mv /etc/relution-sync/config/sample-config.json /etc/relution-sync/config/config.json`
+
+
+You can also copy only the `relution-sync.py` and `sample-config.json` file to your server and run the script manuel.
 
 ---
 
