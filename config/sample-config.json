@@ -3,12 +3,13 @@
   "hostname": "",
   "port": "",
   "accessToken": "",
+  "timer": 1,
 
   "organisation": [
     {
       "id": 1,
-      "groupId_1": "",
-      "groupId_2": "",
+      "toGroup": "",
+      "fromGroup": "",
       "organisationUUID": ""
     }
   ]
