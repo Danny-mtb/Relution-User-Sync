@@ -10,7 +10,8 @@ Change the `sample-config.json` file to your needs and setup.
 
 Then run the following commands:
 
-`mv /etc/relution-sync/config/sample-config.json /etc/relution-sync/config/config.json`
+Rename the config file: `mv /etc/relution-sync/config/sample-config.json /etc/relution-sync/config/config.json`
+Enable and start the service: `systemctl enable relution-sync.service && systemctl start relution-sync.service`
 
 
 You can also copy only the `relution-sync.py` and `sample-config.json` file to your server and run the script manuel.
@@ -19,23 +20,24 @@ You can also copy only the `relution-sync.py` and `sample-config.json` file to y
 
 ```
 {
-  "protocol": "http/https",
-  "hostname": "domain.tld",
-  "port": "80/443/...",
-  "accessToken": "Your created Accestoken",
+  "protocol": "",
+  "hostname": "",
+  "port": "",
+  "accessToken": "",
+  "timer": 1, // in minutes
 
   "organisation": [
     {
       "id": 1,
-      "groupId_1": "To Group",
-      "groupId_2": "From Group",
-      "organisationUUID": "Organisation ID"
+      "toGroup": "", // Group name in Relution
+      "fromGroup": "", // Group name in Relution
+      "organisationUUID": "" // Organisation ID in Relution from the URL
     },
     {
       "id": 2,
-      "groupId_1": "To Group",
-      "groupId_2": "From Group",
-      "organisationUUID": "Organisation ID"
+      "toGroup": "",
+      "fromGroup": "",
+      "organisationUUID": ""
     },
     .
     .

@@ -134,7 +134,6 @@ def main(organisationConfigNumbers):
 def timer(configTime):
     while True:
         main(getOrganisationNumbersFromConfig())
-        print("Start timer")
         time.sleep(int(configTime * 60))
 
 
