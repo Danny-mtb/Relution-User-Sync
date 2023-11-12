@@ -7,4 +7,4 @@ Depends: python3, python3-ldap3, python3-requests, python3-requests-kerberos, py
 Installed-Size: 8
 Maintainer: Danny Anders <danny.anders@cyberworld-system.de>
 Homepage: www.cyberworld-system.de
-Description: A tool to syncronize the relution local groups with the ldap groups
+Description: A tool to synchronize the relution local groups with the ldap groups
