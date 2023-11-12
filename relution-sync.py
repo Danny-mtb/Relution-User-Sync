@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Author: Danny Anders
-# Version: 1.2
+# Version: 1.2.1
 import json
 import requests
 import datetime
@@ -134,6 +134,7 @@ def main(organisationConfigNumbers):
 def timer(configTime):
     while True:
         main(getOrganisationNumbersFromConfig())
+        print("Start timer")
         time.sleep(int(configTime * 60))
 
 

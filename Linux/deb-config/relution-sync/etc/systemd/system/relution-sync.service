@@ -1,12 +1,13 @@
-#/etc/systemd/system/relution-sync.service
 [Unit]
 Description=Relution user upload sync
-After=network.target
-StartLimitIntervalSec=0
+After=multi-user.target
 
 [Service]
 Type=simple
-Restart=always
-RestartSec=1
+WorkingDirectory=/etc/relution-sync/
 User=root
-ExecStart=/usr/bin/python python /etc/relution-sync/relution-sync.py
+Restart=always
+ExecStart=/usr/bin/python3.11 /etc/relution-sync/relution-sync.py
+
+[Install]
+WantedBy=multi-user.target
