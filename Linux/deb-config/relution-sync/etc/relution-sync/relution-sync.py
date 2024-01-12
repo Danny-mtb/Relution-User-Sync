@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Author: Danny Anders
-# Version: 1.2.1
+# Version: 1.3.0
 import json
 import requests
 import datetime
@@ -25,7 +25,8 @@ headers = {
 
 
 logDateAndTime = datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-logFile = open('/var/log/relution-sync.log', 'a')
+logFile = open(config["logPath"] + 'relution-sync.log', 'a+')
+uuidCacheFile = open(config["cachePath"] + 'changedUUIDs.cache', 'a+')
 
 
 def getOrganisationNumbersFromConfig():
@@ -123,17 +124,79 @@ def getGroupId(groupName, organisationUUID):
             return groups[i]['uuid']
 
 
+def changeManagedAppleId(userID, organisationUUID):
+    global managedAppleId, email
+    url = relutionServer + '/api/v1/security/users/' + userID + '?tenantOrganizationUuid=' + organisationUUID
+
+    response = requests.get(url, headers=headers)
+
+    if userID in open('./cache/changedUUIDs.cache', 'r').read():
+        if config['userInterface'] == 'True' or config['userInterface'] == 'true':
+            print('-', end='')
+        else:
+            pass
+
+    else:
+        try:
+            email = response.json()['email']
+            managedAppleId = response.json()['managedAppleId']
+        except KeyError:
+            email = ''
+            managedAppleId = ''
+        finally:
+            if managedAppleId == '' or managedAppleId != email:
+                url = relutionServer + '/api/v1/security/users/' + userID + '?tenantOrganizationUuid=' + organisationUUID
+                payload = {
+                    "managedAppleId": email
+                }
+                requests.put(url, headers=headers, json=payload)
+
+                uuidCacheFile.write(userID + '\n')
+
+                if config['userInterface'] == 'True' or config['userInterface'] == 'true':
+                    print("changed Managed AppleID for: " + email)
+                else:
+                    pass
+
+            elif managedAppleId == email:
+                uuidCacheFile.write(userID + '\n')
+
+                if config['userInterface'] == 'True' or config['userInterface'] == 'true':
+                    print("Managed AppleID is already correct for: " + email)
+                else:
+                    pass
+
+            else:
+                exit('Something went wrong for user: ' + email)
+
+
+def mainManagedAppleId():
+    organisationUUID = config["managedAppleID"][0]["organisationUUID"]
+    groupId = getGroupId(config["managedAppleID"][0]["managedAppleIDGroup"], organisationUUID)
+    usersInGroup = getGroupUsers(groupId, organisationUUID)
+
+    for i in range(len(getGroupUsers(groupId, organisationUUID))):
+        changeManagedAppleId(usersInGroup[i], organisationUUID)
+
+
 def main(organisationConfigNumbers):
     for orgIndex in range(organisationConfigNumbers):
         organisationUUID = config["organisation"][orgIndex]["organisationUUID"]
         groupId_1 = getGroupId(config["organisation"][orgIndex]["toGroup"], organisationUUID)
         groupId_2 = getGroupId(config["organisation"][orgIndex]["fromGroup"], organisationUUID)
-        addUserToGroup(comparisonGroups(getGroupUsers(groupId_1, organisationUUID), getGroupUsers(groupId_2, organisationUUID)), organisationUUID, groupId_1)
+        addUserToGroup(
+            comparisonGroups(getGroupUsers(groupId_1, organisationUUID),
+                             getGroupUsers(groupId_2, organisationUUID)),
+            organisationUUID, groupId_1)
 
 
 def timer(configTime):
     while True:
         main(getOrganisationNumbersFromConfig())
+        if config['managedAppleID'][0]['enabled'] == 'True' or config['managedAppleID'][0]['enabled'] == 'true':
+            mainManagedAppleId()
+        if config['userInterface'] == 'True' or config['userInterface'] == 'true':
+            print("Waiting " + str(configTime) + " minutes")
         time.sleep(int(configTime * 60))
 
 

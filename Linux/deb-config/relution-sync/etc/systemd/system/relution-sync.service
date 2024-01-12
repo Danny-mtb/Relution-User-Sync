@@ -7,7 +7,7 @@ Type=simple
 WorkingDirectory=/etc/relution-sync/
 User=root
 Restart=always
-ExecStart=/usr/bin/python3.11 /etc/relution-sync/relution-sync.py
+ExecStart=/usr/bin/python3.10 /etc/relution-sync/relution-sync.py
 
 [Install]
 WantedBy=multi-user.target

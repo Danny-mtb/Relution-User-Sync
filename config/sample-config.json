@@ -4,6 +4,18 @@
   "port": "",
   "accessToken": "",
   "timer": 1,
+  "logPath": "/var/log/",
+  "cachePath": "./cache/",
+  "userInterface": "True",
+
+  "managedAppleID": [
+    {
+      "id": 1,
+      "enabled": "True",
+      "managedAppleIDGroup": "",
+      "organisationUUID": ""
+    }
+  ],
 
   "organisation": [
     {
