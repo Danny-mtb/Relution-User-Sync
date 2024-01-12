@@ -34,6 +34,18 @@ You can also copy only the `relution-sync.py` and `sample-config.json` file to y
   "port": "", // 80, 443, ...
   "accessToken": "", // generated token from 'my Profile'
   "timer": 1, // in minutes
+  "logPath": "/var/log/", // log Path
+  "cachePath": "./cache/", // cache Path 
+  "userInterface": "True", // True or False
+
+  "managedAppleID": [
+      {
+        "id": 1,
+        "enabled": "True", // True or False
+        "managedAppleIDGroup": "", // Group in which the users with the address to be changed are
+        "organisationUUID": "" // Organisation ID in Relution from the URL
+      }
+    ],
 
   "organisation": [
     {
